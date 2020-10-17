@@ -10,7 +10,12 @@ const connectDB = async () => {
   // try/catch will handle errors if we can't connect
   try {
     // mongoose.connect returns a promise so we wait for it
-    await mongoose.connect(db);
+    // usenewurlparser true because old string parser deprecated
+    // useUnifiedtopology true because server discovery and monitoring engine deprecated
+    await mongoose.connect(db, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     // prints 'mongodb connected' if we connect to database
     console.log('MongoDB Connected...');
   } catch(err) {
@@ -21,4 +26,4 @@ const connectDB = async () => {
   }
 }
 
-module.export = connectDB;
+module.exports = connectDB;

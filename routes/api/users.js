@@ -88,10 +88,16 @@ async (req, res) => {
       config.get('jwtSecret'),
       { expiresIn: 360000 },
       (err, token) => {
-        if(error) throw err;
+        // console.log('X gon give ya Errors')
+        if (err) throw err;
         res.json({ token });
       }
     );
+
+    // We're going to taken this
+    // and pass it through the headers
+    // in access protected routes
+    
   } catch(err){
     console.error(err.message);
     res.status(500).send('Sever error');

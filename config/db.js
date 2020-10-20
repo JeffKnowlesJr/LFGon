@@ -14,7 +14,8 @@ const connectDB = async () => {
     // useUnifiedtopology true because server discovery and monitoring engine deprecated
     await mongoose.connect(db, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true
     });
     // prints 'mongodb connected' if we connect to database
     console.log('MongoDB Connected...');

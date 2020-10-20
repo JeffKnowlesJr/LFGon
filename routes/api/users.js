@@ -6,6 +6,8 @@ const router = express.Router();
 // Includes express-validator because check was deprecated
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const { check, validationResult } = require('express-validator');
 
 // Including user model
@@ -35,7 +37,7 @@ async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+      return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
     }
  
     const avatar = gravatar.url(email, {
@@ -49,7 +51,7 @@ async (req, res) => {
       email,
       avatar,
       password
-    })
+    });
 
     // Encript password
 
@@ -60,7 +62,36 @@ async (req, res) => {
     await user.save();
 
   // Return jsonwebtoken
-  res.send('User Registered');
+  // Setting up user login 
+    const payload = {
+      user: {
+        id: user.id
+      }
+    }
+
+    // jetWoken // jwtToken
+    // --------
+    // jwt signs the token
+    // passing in the payload
+    // containing the User ID
+    // also and also passing
+    // in our Secret Key (token)
+    // an expirationIn order
+    // and a call back function
+    // to receive the status
+    // that sends in response
+    // the signed token
+
+
+    jwt.sign(
+      payload,
+      config.get('jwtSecret'),
+      { expiresIn: 360000 },
+      (err, token) => {
+        if(error) throw err;
+        res.json({ token });
+      }
+    );
   } catch(err){
     console.error(err.message);
     res.status(500).send('Sever error');

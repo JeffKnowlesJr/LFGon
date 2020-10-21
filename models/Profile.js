@@ -9,8 +9,12 @@ Profile = new mongoose.Schema({
     ref: 'user'
   },
   tags: {
-    type: Tag,
-    default: {}
+    type: [Tag],
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
   }
 });
 

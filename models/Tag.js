@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Profile = require('./Profile');
 
-const Tag = new mongoose.Schema({
+const TagSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'profile'
@@ -20,4 +20,4 @@ const Tag = new mongoose.Schema({
   }
 });
 
-module.exports = Tag = mongoose.model.('tag', TagSchema);
+module.exports = Tag = mongoose.model('tag', TagSchema);

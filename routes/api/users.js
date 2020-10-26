@@ -6,6 +6,7 @@ const router = express.Router();
 // Includes express-validator because check was deprecated
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
@@ -107,6 +108,50 @@ async (req, res) => {
 
 });
 // Includes a second parameter as Middleware to check validation
+
+// @route   POST api/users/me
+// @desc    Update User
+// @access  Protected
+router.post('/me', [ auth, [
+  check('name', 'Name is required').not().isEmpty(),
+  check('name', 'Name must be at least 4 characters').isLength({min:4}),
+  check('password', 'Please enter a password with 6 or more characters').isLength({min:6})
+]],
+async (req, res) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({ errors: errors.array() })
+  }
+
+  // Destructuring Request dot Body
+  const { name, password } = req.body;
+
+  // build user object
+  const userFields = {};
+  if(name) userFields.name = name;
+
+  try {
+    // See if user exists
+    let user = await User.findOne({ _id: req.user.id });
+    console.log(user);
+
+    if(user) {
+      user = await User.findOneAndUpdate(
+        { _id: req.user.id},
+        { $set: userFields },
+        { new: true }
+      );
+      return res.json(user);
+    }
+    
+  } catch(err){
+    console.error(err.message);
+    res.status(500).send('Sever error');
+  }
+
+
+});
+
 
 // Exports the router
 module.exports = router;
